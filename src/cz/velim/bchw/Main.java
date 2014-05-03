@@ -7,9 +7,8 @@ import java.util.*;
 public class Main {
 
     static final String CBHW_DIR = "cbhw.dir";
-    static SystemData system;
-    static List<Map<String, String>> software;
-    static Map<String, String> processes;
+    static List<InfoFile> allFiles = new ArrayList<InfoFile>();
+
 
 
     public static void main(String[] args) {
@@ -34,10 +33,9 @@ public class Main {
 
                 System.out.println(file.getAbsolutePath());
                 BufferedReader reader = new BufferedReader(new FileReader(file));
-
-                system = new SystemData();
-                software = new ArrayList<Map<String, String>>();
-                processes = new HashMap<String, String>();
+                SystemData m_system = new SystemData();
+                ArrayList<Map<String, String>> m_software = new ArrayList<Map<String, String>>();
+                HashMap<String, String> m_processes = new HashMap<String, String>();
 
                 String line;
                 while (((line = reader.readLine()) != null) && !(line.startsWith(DataSpec.SOFTWARE))) {
@@ -46,106 +44,109 @@ public class Main {
 
                     String[] vals = line.split(DataSpec.COLON);
                     if (vals[0].equals(DataSpec.HOST_NAME)) {
-                        system.setHostName(vals[1].trim());
+                        m_system.setHostName(vals[1].trim());
                     }
                     if (vals[0].equals(DataSpec.IP_ADDRESS)) {
-                        system.setIPAddress(vals[1].trim());
+                        m_system.setIPAddress(vals[1].trim());
                     }
                     if (vals[0].equals(DataSpec.USER_NAME)) {
-                        system.setUserName(vals[1].trim());
+                        m_system.setUserName(vals[1].trim());
                     }
                     if (vals[0].equals(DataSpec.DESCRIPTION)) {
-                        system.setDescription(vals[1].trim());
+                        m_system.setDescription(vals[1].trim());
                     }
                     if (vals[0].equals(DataSpec.OPERATING_SYSTEM)) {
-                        system.addOperatingSystem(reader);
+                        m_system.addOperatingSystem(reader);
                     }
                     if (vals[0].equals(DataSpec.WINDOWS_PRODUCT_ID)) {
-                        system.setWindowsProductID(vals[1].trim());
+                        m_system.setWindowsProductID(vals[1].trim());
                     }
                     if (vals[0].equals(DataSpec.WINDOWS_PRODUCT_KEY)) {
-                        system.setWindowsProductKey(vals[1].trim());
+                        m_system.setWindowsProductKey(vals[1].trim());
                     }
                     if (vals[0].equals(DataSpec.INTERNET_EXPLORER_VERSION)) {
-                        system.setIEVersion(vals[1].trim());
+                        m_system.setIEVersion(vals[1].trim());
                     }
                     if (vals[0].equals(DataSpec.MODEL)) {
-                        system.setModel(vals[1].trim());
+                        m_system.setModel(vals[1].trim());
                     }
                     if (vals[0].equals(DataSpec.SYSTEM_TYPE)) {
-                        system.setSystemType(vals[1].trim());
+                        m_system.setSystemType(vals[1].trim());
                     }
                     if (vals[0].equals(DataSpec.BIOS)) {
-                        system.setBIOS(reader);
+                        m_system.setBIOS(reader);
                     }
                     if (vals[0].equals(DataSpec.SERIAL_NUMBER)) {
-                        system.setSerialNumber(vals[1].trim());
+                        m_system.setSerialNumber(vals[1].trim());
                     }
                     if (vals[0].equals(DataSpec.MOTHERBOARD)) {
-                        system.setMotherboard(reader);
+                        m_system.setMotherboard(reader);
                     }
                     if (vals[0].equals(DataSpec.CHASSIS)) {
-                        system.setChasis(vals[1].trim());
+                        m_system.setChasis(vals[1].trim());
                     }
                     if (vals[0].equals(DataSpec.PROCESSOR)) {
-                        system.setProcessor(reader);
+                        m_system.setProcessor(reader);
                     }
                     if (vals[0].equals(DataSpec.PHYSICAL_MEMORY)) {
-                        system.setPhysicalMemory(vals[1].trim());
+                        m_system.setPhysicalMemory(vals[1].trim());
                     }
                     if (vals[0].equals(DataSpec.MEMORY_SLOT)) {
-                        system.setMemorySlot(reader);
+                        m_system.setMemorySlot(reader);
                     }
                     if (vals[0].equals(DataSpec.DISK)) {
-                        system.setDisk(reader);
+                        m_system.setDisk(reader);
                     }
                     if (vals[0].equals(DataSpec.LOGICAL_DRIVE)) {
-                        system.setLogicalDrive(reader);
+                        m_system.setLogicalDrive(reader);
                     }
                     if (vals[0].equals(DataSpec.CD_ROM)) {
-                        system.addCDROM(reader);
+                        m_system.addCDROM(reader);
                     }
                     if (vals[0].equals(DataSpec.VIDEO)) {
-                        system.addVideo(reader);
+                        m_system.addVideo(reader);
                     }
                     if (vals[0].equals(DataSpec.MONITOR)) {
-                        system.addMonitor(reader);
+                        m_system.addMonitor(reader);
                     }
                     if (vals[0].equals(DataSpec.PRINTER)) {
-                        system.addPrinter(reader);
+                        m_system.addPrinter(reader);
                     }
                     if (vals[0].equals(DataSpec.MULTIMEDIA)) {
-                        system.addMultimedia(reader);
+                        m_system.addMultimedia(reader);
                     }
                     if (vals[0].equals(DataSpec.NETWORK_ADAPTER)) {
-                        system.addNetworkAdapter(reader);
+                        m_system.addNetworkAdapter(reader);
                     }
                     if (vals[0].equals(DataSpec.LOCAL_ACCOUNT)) {
-                        system.addLocalAccount(reader);
+                        m_system.addLocalAccount(reader);
                     }
                     if (vals[0].equals(DataSpec.SHARE)) {
-                        system.addShare(reader);
+                        m_system.addShare(reader);
                     }
                     if (vals[0].equals(DataSpec.SYSTEM_HOTFIX)) {
-                        system.addSysHotfix(vals[1].trim());
+                        m_system.addSysHotfix(vals[1].trim());
                     }
                     if (vals[0].equals(DataSpec.STARTUP)) {
-                        system.addStartup(reader);
+                        m_system.addStartup(reader);
                     }
                 }
 
                 while (((line = reader.readLine()) != null) && !(line.startsWith(DataSpec.PROCESSES))) {
                     if (!isDataLine(line)) continue;
-                    software.add(getAppMap(line));
+                    m_software.add(getAppMap(line));
                 }
 
                 while (((line = reader.readLine()) != null)) {
                     if (!isDataLine(line)) continue;
                     int pos = line.indexOf(DataSpec.SPACE);
-                    processes.put(line.substring(pos + 1), line.substring(0, pos));
+                    m_processes.put(line.substring(pos + 1), line.substring(0, pos));
                 }
-                System.out.println(system.getStartups().size());
-            }
+
+                InfoFile infoFile = new InfoFile(m_system, m_software, m_processes);
+                allFiles.add(infoFile);
+        }
+        System.out.println("consume the data");
 
         } catch (FileNotFoundException e) {
             System.out.println("Config file not found.");
