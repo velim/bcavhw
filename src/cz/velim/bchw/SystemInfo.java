@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by mvelek on 5/3/2014.
  */
-public class SystemData {
+public class SystemInfo {
     private String hostName;
     private String IPAddress;
     private String userName;

@@ -32,10 +32,11 @@ public class Main {
             for (File file : dir.listFiles()) {
 
                 System.out.println(file.getAbsolutePath());
-                BufferedReader reader = new BufferedReader(new FileReader(file));
-                SystemData m_system = new SystemData();
+                SystemInfo m_system = new SystemInfo();
                 ArrayList<Map<String, String>> m_software = new ArrayList<Map<String, String>>();
                 HashMap<String, String> m_processes = new HashMap<String, String>();
+
+                BufferedReader reader = new BufferedReader(new FileReader(file));
 
                 String line;
                 while (((line = reader.readLine()) != null) && !(line.startsWith(DataSpec.SOFTWARE))) {
@@ -134,7 +135,7 @@ public class Main {
 
                 while (((line = reader.readLine()) != null) && !(line.startsWith(DataSpec.PROCESSES))) {
                     if (!isDataLine(line)) continue;
-                    m_software.add(getAppMap(line));
+                    m_software.add(createAppMap(line));
                 }
 
                 while (((line = reader.readLine()) != null)) {
@@ -156,7 +157,7 @@ public class Main {
         }
     }
 
-    private static Map<String, String> getAppMap(String line) {
+    private static Map<String, String> createAppMap(String line) {
         Map m = new HashMap();
         String tmp = "Name:" + line;
         while (tmp.length() > 0) {
