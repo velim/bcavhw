@@ -1,9 +1,9 @@
-package cz.velim.bchw;
+package cz.velim.bchw.info;
 
 /**
  * Created by mvelek on 5/2/2014.
  */
-public class DataSpec {
+public class Constants {
 
     public static final String SYSTEM = "SYSTEM";
     public static final String SOFTWARE = "SOFTWARE";
@@ -13,6 +13,7 @@ public class DataSpec {
     public static final String SPACE = " ";
     public static final String COLON = ":";
     public static final String COMMA = ",";
+    public static final String HYPHEN = "-";
 
     public static final String HOST_NAME = "Host name";
     public static final String IP_ADDRESS = "IP-address";
@@ -45,4 +46,5 @@ public class DataSpec {
     public static final String PHYSICAL_MEMORY = "Physical memory";
     public static final String DISK = "Disk";
 
+    public static final String CBHW_DB_STRING = "cbhw.db.string";
 }

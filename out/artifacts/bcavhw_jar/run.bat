@@ -1,0 +1,1 @@
+java -jar bcavhw.jar config.properties

@@ -1,4 +1,4 @@
-package cz.velim.bchw;
+package cz.velim.bchw.info;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,10 +12,18 @@ public class Multimedia {
 
     public Multimedia(BufferedReader reader) {
         try {
-            this.name = reader.readLine().split(DataSpec.COLON)[1].trim();
-            this.manufacturer = reader.readLine().split(DataSpec.COLON)[1].trim();
+            this.name = reader.readLine().split(Constants.COLON)[1].trim();
+            this.manufacturer = reader.readLine().split(Constants.COLON)[1].trim();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
     }
 }

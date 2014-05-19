@@ -1,6 +1,9 @@
-package cz.velim.bchw;
+package cz.velim.bchw.info;
+
+import cz.velim.bchw.exceptions.DuplicateValue;
 
 import java.io.BufferedReader;
+import java.lang.management.CompilationMXBean;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,28 +28,35 @@ public class SystemInfo {
     private String serialNumber;
     private Motherboard motherboard;
     private String chasis;
-    private Processor processor;
+    private List<Processor> processor = new ArrayList<Processor>();
     private String physicalMemory;
     private List<MemorySlot> memorySlots = new ArrayList<MemorySlot>();
     private List<Disk> disks = new ArrayList<Disk>();
     private List<LogicalDrive> logicalDrives = new ArrayList<LogicalDrive>();
-    private CdRom cdrom;
+    private List<CdRom> cdrom = new ArrayList<CdRom>();
     private List<Video> videos = new ArrayList<Video>();
     private List<Printer> printers = new ArrayList<Printer>();
     private List<Multimedia> multimedias = new ArrayList<Multimedia>();
     private List<NetworkAdapter> netAdapters = new ArrayList<NetworkAdapter>();
     private List<Share> shares = new ArrayList<Share>();
     private List<String> hotfixes = new ArrayList<String>();
+    private String servicePack;
 
-    public void setHostName(String hostName) {
+    public void setHostName(String hostName) throws DuplicateValue {
+        if (null != this.hostName)
+            throw new DuplicateValue("hostName");
         this.hostName = hostName;
     }
 
-    public void setIPAddress(String IPAddress) {
+    public void setIPAddress(String IPAddress) throws DuplicateValue {
+        if (null != this.IPAddress)
+            throw new DuplicateValue("IPAddress");
         this.IPAddress = IPAddress;
     }
 
-    public void setUserName(String userName) {
+    public void setUserName(String userName) throws DuplicateValue {
+        if (null != this.userName)
+            throw new DuplicateValue("userName");
         this.userName = userName;
     }
 
@@ -78,7 +88,9 @@ public class SystemInfo {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(String description) throws DuplicateValue {
+        if (null != this.description)
+            throw new DuplicateValue("description");
         this.description = description;
     }
 
@@ -155,10 +167,10 @@ public class SystemInfo {
     }
 
     public void setProcessor(BufferedReader reader) {
-        this.processor = new Processor(reader);
+        this.processor.add(new Processor(reader));
     }
 
-    public Processor getProcessor() {
+    public List<Processor> getProcessor() {
         return processor;
     }
 
@@ -170,8 +182,13 @@ public class SystemInfo {
         return physicalMemory;
     }
 
-    public void setMemorySlot(BufferedReader reader) {
+
+    public void addMemorySlot(BufferedReader reader) {
         this.memorySlots.add(new MemorySlot(reader));
+    }
+
+    public List<MemorySlot> getMemorySlots() {
+        return memorySlots;
     }
 
     public void setDisk(BufferedReader reader) {
@@ -187,7 +204,7 @@ public class SystemInfo {
     }
 
     public void addCDROM(BufferedReader reader) {
-        this.cdrom = new CdRom(reader);
+        this.cdrom.add(new CdRom(reader));
     }
 
     public void addVideo(BufferedReader reader) {
@@ -212,5 +229,65 @@ public class SystemInfo {
 
     public void addSysHotfix(String hotfix) {
         this.hotfixes.add(hotfix);
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public String getIPAddress() {
+        return IPAddress;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public OperatingSystem getOperatingSystem() {
+        return operatingSystem;
+    }
+
+    public Bios getBIOS() {
+        return BIOS;
+    }
+
+    public List<LogicalDrive> getLogicalDrives() {
+        return logicalDrives;
+    }
+
+    public List<CdRom> getCdroms() {
+        return cdrom;
+    }
+
+    public List<Video> getVideos() {
+        return videos;
+    }
+
+    public List<Printer> getPrinters() {
+        return printers;
+    }
+
+    public List<Multimedia> getMultimedias() {
+        return multimedias;
+    }
+
+    public List<NetworkAdapter> getNetAdapters() {
+        return netAdapters;
+    }
+
+    public List<Share> getShares() {
+        return shares;
+    }
+
+    public List<String> getHotfixes() {
+        return hotfixes;
+    }
+
+    public void setServicePack(String servicePack) {
+        this.servicePack = servicePack;
+    }
+
+    public String getServicePack() {
+        return servicePack;
     }
 }

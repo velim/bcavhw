@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact name="bcavhw:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/bcavhw_jar</output-path>
+    <root id="root">
+      <element id="archive" name="bcavhw.jar">
+        <element id="module-output" name="bcavhw" />
+      </element>
+      <element id="library" level="project" name="sqljdbc4" />
+    </root>
+  </artifact>
+</component>
