@@ -13,7 +13,8 @@ import java.util.*;
 
 public class Main {
 
-    static final String CBHW_DIR = "cbhw.dir";
+    static final String CBHW_REPORTS_DIR = "cbhw.reports_dir";
+    static final String CBHW_PEOPLE_LIST = "cbhw.people_list";
     static List<InfoFile> allFiles = new ArrayList<InfoFile>();
 
 
@@ -34,7 +35,25 @@ public class Main {
             input = new FileInputStream(args[0]);
             prop = new Properties();
             prop.load(input);
-            path = prop.getProperty(CBHW_DIR);
+
+            //read list of people
+            path = prop.getProperty(CBHW_PEOPLE_LIST);
+
+            if (null == path) {
+                System.out.println("List of people not found.");
+                return;
+            }
+            File list = new File(path);
+            BufferedReader reader = new BufferedReader(new FileReader(list));
+
+            Map<String, String> pList = new HashMap<String, String>();
+            String line;
+            while (((line = reader.readLine()) != null)) {
+                String[] vals = line.split(Constants.SEMICOLON);
+                pList.put(vals[2].trim(), vals[3].trim() + Constants.SPACE + vals[4].trim());
+            }
+
+            path = prop.getProperty(CBHW_REPORTS_DIR);
 
             if (null == path) {
                 System.out.println("Directory not set.");
@@ -49,9 +68,8 @@ public class Main {
                 ArrayList<Map<String, String>> m_software = new ArrayList<Map<String, String>>();
                 HashMap<String, String> m_processes = new HashMap<String, String>();
 
-                BufferedReader reader = new BufferedReader(new FileReader(file));
+                reader = new BufferedReader(new FileReader(file));
 
-                String line;
                 while (((line = reader.readLine()) != null) && !(line.startsWith(Constants.SOFTWARE))) {
 
                     if (!isDataLine(line)) continue;
@@ -160,20 +178,26 @@ public class Main {
                     m_processes.put(line.substring(pos + 1), line.substring(0, pos));
                 }
 
-                InfoFile infoFile = new InfoFile(m_system, m_software, m_processes, file.getName());
+                InfoFile infoFile = new InfoFile(m_system, m_software, m_processes, file.getName(), pList);
                 allFiles.add(infoFile);
             }
 
-            System.out.println("consume the data");
-            // test connect to DB
-            // http://www.programcreek.com/2010/05/java-code-for-connecting-ms-sql-server-by-using-sql-server-authentication/
 
-            Collections.sort(allFiles,new Comparator<InfoFile>() {
+            Collections.sort(allFiles, new Comparator<InfoFile>() {
                 @Override
                 public int compare(InfoFile o1, InfoFile o2) {
-                    return o1.getPersonelID().compareTo(o2.getPersonelID());
+                    return o1.getPersonalID().compareTo(o2.getPersonalID());
                 }
             });
+
+            InfoFile lastInfoFile = null;
+            for (InfoFile iFile : allFiles) {
+                iFile.updatePCOrder(lastInfoFile);
+                lastInfoFile = iFile;
+            }
+
+            System.out.println("write data to database");
+
             MyConnection conn = new MyConnection();
             if (conn.initConnection(prop.getProperty(Constants.CBHW_DB_STRING))) {
                 DBWriter dbwriter = new DBWriter(conn.getConnection());
@@ -193,23 +217,24 @@ public class Main {
         }
 
     }
-    private static Map<String, String> createAppMap (String line){
-            Map m = new HashMap();
-            String tmp = "Name:" + line;
-            String[] entries = tmp.split(Constants.COMMA);
-            String lastkey = "";
-            for (String entry : entries){
-                String[] vals = entry.split(Constants.COLON);
-                try{
-                    m.put(vals[0].trim(), vals[1].trim());
-                    lastkey = vals[0].trim();
-                }catch (ArrayIndexOutOfBoundsException e){
-                    m.put(lastkey, m.get(lastkey)+Constants.COMMA +vals[0]);
-                }
-            }
 
-            return m;
+    private static Map<String, String> createAppMap(String line) {
+        Map m = new HashMap();
+        String tmp = "Name:" + line;
+        String[] entries = tmp.split(Constants.COMMA);
+        String lastkey = "";
+        for (String entry : entries) {
+            String[] vals = entry.split(Constants.COLON);
+            try {
+                m.put(vals[0].trim(), vals[1].trim());
+                lastkey = vals[0].trim();
+            } catch (ArrayIndexOutOfBoundsException e) {
+                m.put(lastkey, m.get(lastkey) + Constants.COMMA + vals[0]);
+            }
         }
+
+        return m;
+    }
 
     private static boolean isDataLine(String line) {
         if (line.startsWith(Constants.SYSTEM) ||

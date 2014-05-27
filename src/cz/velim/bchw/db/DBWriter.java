@@ -11,8 +11,8 @@ import java.util.Map;
  * Created by mvelek on 5/6/2014.
  */
 public class DBWriter {
-    public static final String INSERT_HOST_REPORT = "INSERT INTO dbo.HOST_REPORT VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    public static final String SELECT_HOST_REPORT_ID = "SELECT MAX(id) FROM HOST_REPORT";
+    public static final String INSERT_HOST_REPORT = "INSERT INTO dbo.HOST_REPORT VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    public static final String SELECT_HOST_REPORT_ID = "SELECT MAX(ID) FROM HOST_REPORT";
     public static final String INSERT_SYSTEM = "INSERT INTO OPERATING_SYSTEM VALUES (?,?,?,?,?)";
     public static final String INSERT_BIOS = "INSERT INTO BIOS VALUES (?,?,?,?)";
     public static final String INSERT_MOTHERBOARD = "INSERT INTO MOTHERBOARD VALUES (?,?,?,?)";
@@ -362,20 +362,24 @@ public class DBWriter {
 
     private void writeHostReport(InfoFile iFile) throws SQLException {
         PreparedStatement sta = this.conn.prepareStatement(INSERT_HOST_REPORT);
+        String id = iFile.getPath().split(Constants.HYPHEN)[0];
         sta.setString(1, iFile.getPath());
-        sta.setString(2, iFile.getSystem().getHostName());
-        sta.setString(3, iFile.getSystem().getIPAddress());
-        sta.setString(4, iFile.getSystem().getUserName());
-        sta.setString(5, iFile.getSystem().getDescription());
-        sta.setString(6, iFile.getSystem().getWindowsProductID());
-        sta.setString(7, iFile.getSystem().getWindowsProductKey());
-        sta.setString(8, iFile.getSystem().getServicePack());
-        sta.setString(9, iFile.getSystem().getIEVersion());
-        sta.setString(10, iFile.getSystem().getModel());
-        sta.setString(11, iFile.getSystem().getSystemType());
-        sta.setString(12, iFile.getSystem().getSerialNumber());
-        sta.setString(13, iFile.getSystem().getChasis());
-        sta.setString(14, iFile.getSystem().getPhysicalMemory());
+        sta.setString(2, iFile.getPersonalID());
+        sta.setString(3, iFile.getPersonalName());
+        sta.setInt(4, iFile.getPCOrder());
+        sta.setString(5, iFile.getSystem().getHostName());
+        sta.setString(6, iFile.getSystem().getIPAddress());
+        sta.setString(7, iFile.getSystem().getUserName());
+        sta.setString(8, iFile.getSystem().getDescription());
+        sta.setString(9, iFile.getSystem().getWindowsProductID());
+        sta.setString(10, iFile.getSystem().getWindowsProductKey());
+        sta.setString(11, iFile.getSystem().getServicePack());
+        sta.setString(12, iFile.getSystem().getIEVersion());
+        sta.setString(13, iFile.getSystem().getModel());
+        sta.setString(14, iFile.getSystem().getSystemType());
+        sta.setString(15, iFile.getSystem().getSerialNumber());
+        sta.setString(16, iFile.getSystem().getChasis());
+        sta.setString(17, iFile.getSystem().getPhysicalMemory());
         sta.executeUpdate();
     }
 }

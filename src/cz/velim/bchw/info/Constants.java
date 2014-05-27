@@ -14,6 +14,7 @@ public class Constants {
     public static final String COLON = ":";
     public static final String COMMA = ",";
     public static final String HYPHEN = "-";
+    public static final String SEMICOLON = ";";
 
     public static final String HOST_NAME = "Host name";
     public static final String IP_ADDRESS = "IP-address";
@@ -47,4 +48,5 @@ public class Constants {
     public static final String DISK = "Disk";
 
     public static final String CBHW_DB_STRING = "cbhw.db.string";
+
 }
