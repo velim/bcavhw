@@ -1,0 +1,1 @@
+SQLCMD -S localhost\SQLEXPRESS -E -i create.sql
